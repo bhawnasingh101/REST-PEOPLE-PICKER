@@ -1,0 +1,44 @@
+function PopulatePicker(itemId)
+{                       
+var tempurl=_spPageContextInfo.siteAbsoluteUrl + "/abc/_api/web/lists/getbytitle('xyz')/items?$filter=ID eq '"+itemId+"'&$select=USER1/UserName&$expand=USER1/Id"	
+	 $.ajax({
+      
+	   url: tempurl,
+        type: "GET",
+        async: false,
+        headers: {
+            "Accept": "application/json;odata=verbose"
+        },
+        success: function(data) {          
+		
+
+						if(data.d.results[0].USER1.results[0]!=null)
+						{
+							initializePeoplePicker1("USERPEOPLEPICKER");
+							var tempppl = data.d.results[0].USER1.results[0].UserName;
+							
+							user1=data.d.results[0].USER1.results[0].UserName;
+							
+							var divPeople = SPClientPeoplePicker.SPClientPeoplePickerDict.USERPEOPLEPICKER_TopSpan;
+		 
+							var userObj = {
+								'Key': tempppl
+							};
+							divPeople.AddUnresolvedUser(userObj, true);
+							//Disable PEOPLE PICKER
+							$(".sp-peoplepicker-delImage").hide();
+							  
+							  $("input.sp-peoplepicker-editorInput[title='peoplepicker']").prop('disabled', true);
+							  
+							 
+							  $("div.sp-peoplepicker-topLevel[title='peoplepicker']").addClass("sp-peoplepicker-topLevelDisabled");
+							  //END Disable PEOPLE PICKER
+						}
+				},
+		error: function(xhr, status, error) {
+            alert(data.responseJSON.error);
+        }
+    });
+
+}
+		
